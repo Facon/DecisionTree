@@ -157,7 +157,7 @@ TEST_CASE("Create DecisionTree and print")
     std::ostringstream buffer;
     printDecisionTree(buffer, tree);
 
-    CHECK(buffer.str() == "Is Occupation == Handlers-cleaners?\n--> True: \n\tPredict { <=50K: 1 }\n--> False: \n\tPredict { >50K: 4 }\n");
+    CHECK(buffer.str() == "Is Occupation == Handlers-cleaners?\n--> True: \n  Predict { <=50K: 1 }\n--> False: \n  Predict { >50K: 4 }\n");
 }
 
 TEST_CASE("Classify an example with a generated Decision Tree and print")
@@ -169,5 +169,5 @@ TEST_CASE("Classify an example with a generated Decision Tree and print")
     std::ostringstream buffer;
     printPredictions(buffer, trainingData[0].at(LAST_COLUMN), predictions);
 
-    CHECK(buffer.str() == "Actual: >50K. Predicted: { '>50K': '100%' }");
+    CHECK(buffer.str() == "Actual: >50K. Predicted: { '>50K': '100%' }\n");
 }
