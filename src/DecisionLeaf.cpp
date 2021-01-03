@@ -7,6 +7,28 @@ DecisionLeaf::DecisionLeaf(const DataSubset& dataSubset, size_t featureIndex) :
 {
 }
 
+DecisionLeaf::DecisionLeaf(const DecisionLeaf& decisionLeaf) : 
+	predictions(decisionLeaf.predictions)
+{
+}
+
+DecisionLeaf::DecisionLeaf(DecisionLeaf&& decisionLeaf) noexcept : 
+	predictions(decisionLeaf.predictions)
+{
+}
+
+DecisionLeaf& DecisionLeaf::operator=(const DecisionLeaf& decisionLeaf)
+{
+	return *this = DecisionLeaf(decisionLeaf);
+}
+
+DecisionLeaf& DecisionLeaf::operator=(DecisionLeaf&& decisionLeaf) noexcept
+{
+	new (this) DecisionLeaf(std::move(decisionLeaf));
+
+	return *this;
+}
+
 uint32_t DecisionLeaf::getCounts(const Feature& feature)
 {
 	return predictions.at(feature);

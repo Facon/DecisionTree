@@ -7,18 +7,20 @@
 
 struct DecisionNode;
 
-using VariantNode = std::variant<std::unique_ptr<DecisionNode>, DecisionLeaf>;
+using VariantNode = std::variant<std::shared_ptr<DecisionNode>, DecisionLeaf>;
 
 struct DecisionNode
 {
+	static VariantNode copyVariantNode(const VariantNode& variantNode);
+
 	DecisionNode(const Question& question, VariantNode&& trueNode,
 		VariantNode&& falseNode);
 	~DecisionNode() = default;
-	DecisionNode(const DecisionNode& decisionNode) = delete;
+	DecisionNode(const DecisionNode& decisionNode);
 	DecisionNode(DecisionNode&& decisionNode) noexcept;
 	
-	DecisionNode& operator=(const DecisionNode& decisionNode) = delete;
-	DecisionNode& operator=(DecisionNode&& decisionNode);
+	DecisionNode& operator=(const DecisionNode& decisionNode);
+	DecisionNode& operator=(DecisionNode&& decisionNode) noexcept;
 
 	const Question question;
 	VariantNode trueNode;

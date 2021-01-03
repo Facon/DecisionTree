@@ -39,8 +39,10 @@ private:
 	void checkCorrectTrainingDataBoundaries();
 	void clearCache();
 	DataSubset createDataSubset() const;
-	VariantNode buildTree(const DataSubset& dataSubset);
+	VariantNode buildTree(const DataSubset& dataSubset) const;
 	BestResult createEmptyBestResult() const;
+
+	static std::atomic_uint16_t threadCounter;
 
 	TrainingData trainingData;
 	size_t featureIndexToPredict;

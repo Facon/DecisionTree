@@ -9,7 +9,7 @@ DecisionLeaf::Predictions classify(const VariantNode& node, const Example& examp
         return decisionLeaf.getPredictions();
     }
 
-    auto& decisionNode = std::get<std::unique_ptr<DecisionNode>>(node);
+    auto& decisionNode = std::get<std::shared_ptr<DecisionNode>>(node);
 
     if (decisionNode->question.match(example))
     {

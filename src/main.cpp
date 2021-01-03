@@ -45,13 +45,6 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-AdultCSVReader::FileContent readAdultCSV(std::string_view filePath)
-{
-	AdultCSVReader reader(filePath);
-
-	return reader.read();
-}
-
 std::tuple<std::string, uint32_t> handleArguments(int argc, char* argv[])
 {
 	if (argc != 3)
@@ -87,4 +80,11 @@ TrainingData createTrainingData(std::string_view filePath)
 	}
 
 	return trainingData;
+}
+
+AdultCSVReader::FileContent readAdultCSV(std::string_view filePath)
+{
+	AdultCSVReader reader(filePath);
+
+	return reader.read();
 }

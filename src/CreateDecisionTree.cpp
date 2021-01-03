@@ -1,6 +1,9 @@
 #include "CreateDecisionTree.h"
 
 #include <optional>
+#include <future>
+
+std::atomic_uint16_t CreateDecisionTree::threadCounter = 0;
 
 CreateDecisionTree::CreateDecisionTree(const TrainingData& trainingData) 
 	: trainingData(trainingData), featureIndexToPredict()
@@ -58,8 +61,9 @@ DataSubset CreateDecisionTree::createDataSubset() const
     return dataSubset;
 }
 
-VariantNode CreateDecisionTree::buildTree(const DataSubset& dataSubset)
+VariantNode CreateDecisionTree::buildTree(const DataSubset& dataSubset) const
 {
+
     const auto bestResult = findBestSplit(dataSubset);
 
     if (bestResult.gain == 0)
@@ -67,14 +71,42 @@ VariantNode CreateDecisionTree::buildTree(const DataSubset& dataSubset)
         return VariantNode(DecisionLeaf(dataSubset, featureIndexToPredict));
     }
 
-    const auto [trueDataSubset, falseDataSubset] = partitionBetweenTrueAndFalse(dataSubset, 
+    DataSubset trueDataSubset;
+    DataSubset falseDataSubset;
+
+    std::tie(trueDataSubset, falseDataSubset) = partitionBetweenTrueAndFalse(dataSubset, 
         bestResult.question);
 
-    auto trueBranch = buildTree(trueDataSubset);
-    auto falseBranch = buildTree(falseDataSubset);
+    auto counter = threadCounter.load();
 
-    return VariantNode(std::move(std::make_unique<DecisionNode>(bestResult.question, 
-        std::move(trueBranch), std::move(falseBranch))));
+    if (counter <= std::thread::hardware_concurrency())
+    {
+        VariantNode trueBranch;
+        VariantNode falseBranch;
+
+        threadCounter.fetch_add(1);
+
+        auto f1 = std::async([*this, &trueDataSubset, &trueBranch]()
+            { trueBranch.swap(buildTree(trueDataSubset)); });
+        auto f2 = std::async([*this, &falseDataSubset, &falseBranch]()
+            { falseBranch.swap(buildTree(falseDataSubset)); });
+
+        f1.wait();
+        f2.wait();
+
+        threadCounter.fetch_sub(1);
+
+        return VariantNode(std::move(std::make_unique<DecisionNode>(bestResult.question,
+            std::move(trueBranch), std::move(falseBranch))));
+    }
+    else
+    {
+        auto trueBranch = buildTree(trueDataSubset);
+        auto falseBranch = buildTree(falseDataSubset);
+
+        return VariantNode(std::move(std::make_unique<DecisionNode>(bestResult.question,
+            std::move(trueBranch), std::move(falseBranch))));
+    }
 }
 
 CreateDecisionTree::BestResult CreateDecisionTree::findBestSplit(const DataSubset& dataSubset) const

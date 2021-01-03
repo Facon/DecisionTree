@@ -13,7 +13,7 @@ void printDecisionTree(std::ostream& out, const VariantNode& node, std::string_v
         return;
     }
 
-    auto& decisionNode = std::get<std::unique_ptr<DecisionNode>>(node);
+    auto& decisionNode = std::get<std::shared_ptr<DecisionNode>>(node);
     
     out << spacing << decisionNode->question << "\n";
     std::string newSpacing(spacing);
