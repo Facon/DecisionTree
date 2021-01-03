@@ -1,0 +1,6 @@
+[requires]
+doctest/2.4.4
+fast-cpp-csv-parser/cci.20200830
+
+[generators]
+cmake
