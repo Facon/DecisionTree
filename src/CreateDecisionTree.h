@@ -44,7 +44,7 @@ private:
 
 	static std::atomic_uint16_t threadCounter;
 
-	TrainingData trainingData;
+	std::shared_ptr<const TrainingData> trainingData;
 	size_t featureIndexToPredict;
 	mutable std::map<size_t, std::set<std::reference_wrapper<const Feature>>> uniqueFeaturesByColumn;
 };

@@ -6,7 +6,7 @@
 std::atomic_uint16_t CreateDecisionTree::threadCounter = 0;
 
 CreateDecisionTree::CreateDecisionTree(const TrainingData& trainingData) 
-	: trainingData(trainingData), featureIndexToPredict()
+	: trainingData(std::make_shared<const TrainingData>(trainingData)), featureIndexToPredict()
 {
 }
 
@@ -23,19 +23,19 @@ VariantNode CreateDecisionTree::operator()(size_t featureIndexToPredict)
 
 void CreateDecisionTree::checkCorrectTrainingDataBoundaries()
 {
-    if (trainingData.empty())
+    if (trainingData->empty())
     {
         throw std::invalid_argument("Empty training data!");
     }
 
-    if (trainingData.at(0).empty())
+    if (trainingData->at(0).empty())
     {
         throw std::invalid_argument("No examples!");
     }
 
-    const auto numberOfFeatures = trainingData.at(0).size();
+    const auto numberOfFeatures = trainingData->at(0).size();
 
-    for (const auto& example : trainingData)
+    for (const auto& example : *trainingData)
     {
         if (example.size() != numberOfFeatures)
         {
@@ -53,7 +53,7 @@ DataSubset CreateDecisionTree::createDataSubset() const
 {
     DataSubset dataSubset;
 
-    for (auto& example : trainingData)
+    for (auto& example : *trainingData)
     {
         dataSubset.emplace_back(example);
     }
