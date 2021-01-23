@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 #include <tuple>
+#include <atomic>
 #include "Question.h"
 #include "Example.h"
 #include "DecisionNode.h"

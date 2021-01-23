@@ -87,17 +87,17 @@ VariantNode CreateDecisionTree::buildTree(const DataSubset& dataSubset) const
         threadCounter.fetch_add(1);
 
         auto f1 = std::async([*this, &trueDataSubset, &trueBranch]()
-            { trueBranch.swap(buildTree(trueDataSubset)); });
+            { trueBranch = buildTree(trueDataSubset); });
         auto f2 = std::async([*this, &falseDataSubset, &falseBranch]()
-            { falseBranch.swap(buildTree(falseDataSubset)); });
+            { falseBranch = buildTree(falseDataSubset); });
 
         f1.wait();
         f2.wait();
 
         threadCounter.fetch_sub(1);
 
-        return VariantNode(std::move(std::make_unique<DecisionNode>(bestResult.question,
-            std::move(trueBranch), std::move(falseBranch))));
+        return VariantNode(std::make_unique<DecisionNode>(bestResult.question,
+            std::move(trueBranch), std::move(falseBranch)));
     }
     else
     {

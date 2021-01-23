@@ -1,15 +1,5 @@
 #include "DecisionNode.h"
 
-VariantNode DecisionNode::copyVariantNode(const VariantNode& variantNode)
-{
-	if (std::holds_alternative<DecisionLeaf>(variantNode))
-	{
-		return std::get<DecisionLeaf>(variantNode);
-	}
-
-	return std::get<std::shared_ptr<DecisionNode>>(variantNode);
-}
-
 DecisionNode::DecisionNode(const Question& question, VariantNode&& trueNode,
 	VariantNode&& falseNode) : question(question), trueNode(std::move(trueNode)), 
 	falseNode(std::move(falseNode))

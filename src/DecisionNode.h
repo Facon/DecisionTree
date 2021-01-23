@@ -11,8 +11,6 @@ using VariantNode = std::variant<std::shared_ptr<DecisionNode>, DecisionLeaf>;
 
 struct DecisionNode
 {
-	static VariantNode copyVariantNode(const VariantNode& variantNode);
-
 	DecisionNode(const Question& question, VariantNode&& trueNode,
 		VariantNode&& falseNode);
 	~DecisionNode() = default;
