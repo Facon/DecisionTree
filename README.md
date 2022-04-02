@@ -1,4 +1,9 @@
-*How to compile:*
+# DecisionTree
+Sample implementation of a multithreading decision tree in C++17. I have based it on https://www.youtube.com/watch?v=LDRbO9a6XPU, but I have added threading using a fork-join strategy.
+
+It's not the fastest implementation but is fast enough and is a good starting point.
+
+## How to compile
 
 1. You need to have CMake and Conan installed.
 2. I have provided Conan profiles that I have used.
